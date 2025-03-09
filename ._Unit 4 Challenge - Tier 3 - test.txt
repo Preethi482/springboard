@@ -1,0 +1,61 @@
+     Mac OS X            	   2  U     ‡                                      ATTR      ‡   È  ¿                  È  ƒ  %com.apple.metadata:kMDItemWhereFroms   K   <  com.apple.quarantine bplist00¢_https://doc-0g-08-docs.googleusercontent.com/docs/securesc/q8soobhlapupgkuaas7b6697nsi7ensa/060grs575fpqi49k2fp8b4kensfh9ks2/1581458400000/16538663607649005470/17270213854571292044/1gQ1DtUvUNITQKIPp13AiRZeT0G8QC4VH?h=03117908452999551583&e=download&authuser=0_Hhttps://drive.google.com/drive/folders/1hG4Gb1tXMoc9-eULH0ryiei7gdLgpVSr  
+                           ]q/0081;5e4325c0;Chrome;5BBA81D7-C1D4-4831-9B02-842A91E07BEC 
+
+
+# Let's import the pandas, numpy libraries as pd, and np respectively. 
+import pandas as pd
+import numpy as np
+# Load the pyplot collection of functions from matplotlib, as plt 
+import matplotlib.pyplot as plt
+
+ First, make a variable called url_LondonHousePrices, and assign it the following link, enclosed in quotation-marks as a string:
+# https://data.london.gov.uk/download/uk-house-price-index/70ac0766-8902-4eb5-aab5-01951aaed773/UK%20House%20price%20index.xls
+
+url_LondonHousePrices= "https://data.london.gov.uk/download/uk-house-price-index/70ac0766-8902-4eb5-aab5-01951aaed773/UK%20House%20price%20index.xls"
+
+# The dataset we're interested in contains the Average prices of the houses, and is actually on a particular sheet of the Excel file. 
+# As a result, we need to specify the sheet name in the read_excel() method.
+# Put this data into a variable called properties.  
+properties = pd.read_excel(url_LondonHousePrices, sheet_name='Average price', index_col= None)
+
+
+properties.head()
+
+properties.transpose()
+
+properties = properties.transpose().reset_index()
+
+properties.reset_index()
+
+properties.dropna(axis=1, inplace=True)
+
+properties.index = pd.to_datetime(properties.index)
+# Select a specific borough, e.g., Camden
+camden_prices = properties["Camden"]
+# Plot the data
+plt.figure(figsize=(10,5))
+plt.plot(camden_prices, label="Camden House Prices", color="blue")
+
+# Formatting
+plt.title("House Prices in Camden Over Time")
+plt.xlabel("Year")
+plt.ylabel("Average Price (£)")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# Select the start and end years (around 2000 and the latest year)
+start_year = properties.loc["2000-01-01"]
+end_year = properties.loc[properties.index.max()]
+
+# Calculate the percentage increase for each borough
+price_increase = ((end_year - start_year) / start_year) * 100
+
+# Sort boroughs by highest increase
+top_boroughs = price_increase.sort_values(ascending=False)
+
+# Display the top 5 boroughs with the greatest increase
+print(top_boroughs.head(5))
+
+properties.describe()
